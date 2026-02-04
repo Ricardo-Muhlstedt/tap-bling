@@ -1,8 +1,12 @@
-# tap-bling
+# Singer tap for Bling!
 
-`tap-bling` is a Singer tap for bling.
+This Bling! tap produces JSON-formatted data following the Singer spec.
 
-Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
+[![Python](https://img.shields.io/static/v1?logo=python&label=python&message=3.10%20|%203.11%20|%203.12%20|%203.13%20|%203.14&color=blue)]()
+
+
+`tap-bling` is a Singer tap for the [Bling! REST API](https://developer.bling.com.br/referencia) 
+built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
 <!--
 
@@ -24,9 +28,30 @@ uv tool install git+https://github.com/ORG_NAME/tap-bling.git@main
 
 -->
 
-## Configuration
+## Configuration file
 
-### Accepted Config Options
+How to get your refresh token: [Bling Docs](https://developer.bling.com.br/aplicativos).
+
+*  `bling_refresh_token` String (required) - The refresh token to request Bling API access token.
+*  `client_id` String (required) - Bling API client ID, required to authenticate and request Bling API access token.
+*  `client_secret` String (required) - Bling API client secret, required to authenticate and request Bling API access token.
+*  `auth_endpoint` String (required) - Bling API endpoint for requesting the access token.
+*  `start_date` String (optional) - The earliest record date to sync.
+
+
+## Supported Streams
+
+### Default Streams
+* [Products](https://api.bling.com.br/Api/v3/products)
+* [Inventory](https://api.bling.com.br/Api/v3/products)
+
+## Roadmap
+
+- [ ] Add new default streams (Invoices, Orders, Sales-channels, Payables, Receivables)
+- [ ] 
+
+
+## Accepted Config Options
 
 <!--
 Developer TODO: Provide a list of config options accepted by the tap.
@@ -53,9 +78,63 @@ environment variable is set either in the terminal context or in the `.env` file
 
 ### Source Authentication and Authorization
 
-<!--
-Developer TODO: If your tap requires special access on the source system, or any special authentication requirements, provide those here.
--->
+Source Authentication and Authorization
+To extract data from Bling ERP (API v3), this tap requires OAuth2 credentials. Because Bling uses a short-lived Access Token flow, you must provide a Refresh Token which the tap will use to maintain a persistent connection.
+
+#### 1.  Create a Bling App Integration 
+   Log in to the Bling Developer Portal.
+
+Navigate to Meus Aplicativos (My Apps).
+
+Click Cadastrar Aplicativo.
+
+Fill in the basic details:
+
+Nome: Meltano Data Tap (or your internal project name).
+
+Callback URL: http://localhost:8080 (This is required for the authorization step, even if running headless).
+
+In the Scopes section, select the resources you intend to extract. To match the tap's capabilities, ensure you select "Read" (Leitura) permissions for entities such as:
+
+* vendas (Sales/Orders)
+
+* produtos (Products)
+
+* contatos (Customers/Suppliers)
+
+* estoques (Inventory)
+
+* Save the application.
+
+* Copy the Client ID and Client Secret.
+
+#### 2. Generate the Initial Refresh Token
+
+***Note**: Since this is a backend data pipeline, you must perform the initial "Handshake" manually to generate the first token.*
+
+A. Get the Authorization Code Paste the following URL into your browser, replacing `YOUR_CLIENT_ID` with the ID from Step 1:
+
+
+`https://www.bling.com.br/Api/v3/oauth/authorize?response_type=code&client_id=YOUR_CLIENT_ID&state=state_demo`
+
+Click Authorize (Autorizar) on the Bling consent screen.
+
+You will be redirected to your Callback URL (e.g., localhost).
+
+Look at the URL in your browser address bar. It will look like this: `http://localhost:8080/?code=YOUR_AUTHORIZATION_CODE&state=state_demo`
+
+Copy the `YOUR_AUTHORIZATION_CODE` value.
+
+B. Exchange Code for Refresh Token Run the following curl command in your terminal (or use Postman). Replace the placeholders with your actual values:
+
+```Bash
+curl -X POST "https://www.bling.com.br/Api/v3/oauth/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -u "YOUR_CLIENT_ID:YOUR_CLIENT_SECRET" \
+     -d "grant_type=authorization_code" \
+     -d "code=YOUR_AUTHORIZATION_CODE"
+```
+The response will contain your `refresh_token`.
 
 ## Usage
 
@@ -122,6 +201,8 @@ meltano invoke tap-bling --version
 # Run a test EL pipeline
 meltano run tap-bling target-jsonl
 ```
+
+---
 
 ### SDK Dev Guide
 
