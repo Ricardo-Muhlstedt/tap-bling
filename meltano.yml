@@ -17,30 +17,50 @@ plugins:
     - stream-maps
     - structured-logging
 
-    # TODO: Declare settings and their types here:
     settings:
-    - name: username
-      label: Username
-      description: The username to use for authentication
-
-    - name: password
-      kind: password
-      label: Password
-      description: The password to use for authentication
+    - name: client_id
+      kind: string
+      label: Client ID
+      description: The OAuth Client ID from Bling application settings.
       sensitive: true
+
+    - name: client_secret
+      kind: password
+      label: Client Secret
+      description: The OAuth Client Secret.
+      sensitive: true
+
+    - name: bling_refresh_token
+      kind: password
+      label: Refresh Token
+      description: The persistent token used to fetch new access tokens.
+      sensitive: true
+
+    - name: auth_endpoint
+      kind: string
+      label: Auth Endpoint
+      description: The URL to exchange tokens (e.g., https://api.bling.com.br/Api/v3/oauth/token).
+      value: "https://api.bling.com.br/Api/v3/oauth/token"
 
     - name: start_date
       kind: date_iso8601
       label: Start Date
-      description: Initial date to start extracting data from
+      description: Initial date to start extracting data from.
 
-    # TODO: Declare required settings here:
+    - name: batch_size
+      kind: integer
+      label: Batch Size
+      description: The number of IDs to process in a single API call (for Inventory).
+      value: 100
+
     settings_group_validation:
-    - [username, password]
+    - [client_id, client_secret, bling_refresh_token, start_date]
 
-    # TODO: Declare default configuration values here:
+
     config:
-      start_date: '2010-01-01T00:00:00Z'
+      start_date: '2026-01-28'
+      auth_endpoint: "https://api.bling.com.br/Api/v3/oauth/token"
+      batch_size: 100
 
   loaders:
   - name: target-jsonl
