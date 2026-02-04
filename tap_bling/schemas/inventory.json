@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "properties": {
+    "produto": {
+      "type": ["object", "null"],
+      "properties": {
+        "id": {
+          "type": ["integer", "null"]
+        },
+        "codigo": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "saldoFisicoTotal": {
+      "type": ["number", "null"]
+    },
+    "saldoVirtualTotal": {
+      "type": ["number", "null"]
+    },
+    "depositos": {
+      "type": ["array", "null"],
+      "items": {
+        "type": ["object", "null"],
+        "properties": {
+          "id": {
+            "type": ["integer", "null"]
+          },
+          "saldoFisico": {
+            "type": ["number", "null"]
+          },
+          "saldoVirtual": {
+            "type": ["number", "null"]
+          }
+        }
+      }
+    }
+  },
+  "required": []
+}

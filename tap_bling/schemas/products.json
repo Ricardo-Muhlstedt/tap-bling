@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": ["integer", "string"]
+    },
+    "idProdutoPai": {
+      "type": ["integer", "string", "null"]
+    },
+    "nome": {
+      "type": ["string", "null"]
+    },
+    "codigo": {
+      "type": ["string", "null"]
+    },
+    "preco": {
+      "type": ["number", "null"],
+      "description": "Price value. Note: JSON floats can have precision issues."
+    },
+    "precoCusto": {
+      "type": ["number", "null"]
+    },
+    "tipo": {
+      "type": ["string", "null"]
+    },
+    "situacao": {
+      "type": ["string", "null"]
+    },
+    "formato": {
+      "type": ["string", "null"]
+    },
+    "descricaoCurta": {
+      "type": ["string", "null"]
+    },
+    "imagemURL": {
+      "type": ["string", "null"]
+    },
+    "estoque": {
+      "type": ["object", "null"],
+      "properties": {
+        "saldoVirtualTotal": {
+          "type": ["integer", "number", "null"]
+        }
+      }
+    }
+  },
+  "required": ["id"]
+}
