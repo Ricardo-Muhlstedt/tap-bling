@@ -110,7 +110,8 @@ In the Scopes section, select the resources you intend to extract. To match the 
 
 #### 2. Generate the Initial Refresh Token
 
-***Note**: Since this is a backend data pipeline, you must perform the initial "Handshake" manually to generate the first token.*
+> [!NOTE]
+>Since this is a backend data pipeline, you must perform the initial "Handshake" manually to generate the first token.*
 
 A. Get the Authorization Code Paste the following URL into your browser, replacing `YOUR_CLIENT_ID` with the ID from Step 1:
 
